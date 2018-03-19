@@ -1,6 +1,6 @@
 #include <shared.h>
 
-void    handle_error(int error_type, char *message)
+void    handle_error(int error_type, int fd, char *message)
 {
     if (!message)
         message = "unidentified";
@@ -14,5 +14,11 @@ void    handle_error(int error_type, char *message)
         ft_printf("Client: %s\n", message);
     else if (error_type == 5)
         ft_printf("Server: %s\n", message);
+    else if (error_type == 6)
+    {
+        ft_putendl_fd(message, fd);
+        write(fd, "\0", 1);
+        return ;
+    }
     exit (-(error_type));
 }
