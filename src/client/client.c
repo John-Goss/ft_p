@@ -1,14 +1,62 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/socket.h>
 #include <netdb.h>
-#include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <libft.h>
-#include <shared.h>
+#include <ft_p.h>
 
-int	create_client(char *addr, int port)
+void	read_client(int fd, char *buf)
+{
+	int	size;
+
+	while ((size = read(fd, buf, 1)) > 0 && buf[0] != '\0')
+	{
+		buf[size] = '\0';
+		write(1, buf, size);
+	}
+}
+
+void	local_navigation(int fd, char *buf, char *pwd)
+{
+	if (ft_strcmp(buf, "lpwd") == 0 && ft_strlen(buf) == 4)
+		cmd_lpwd();
+	else if (ft_strncmp(buf, "lls", 3) == 0 && ft_strlen(buf) >= 3)
+		cmd_lls(buf);
+	else if (ft_strncmp(buf, "lcd ", 4) == 0 && ft_strlen(buf) > 4)
+		cmd_lcd(&buf[4], pwd);
+	else if (ft_strncmp(buf, "lmkdir ", 7) == 0 && ft_strlen(buf) > 7)
+		cmd_lmkdir(&buf[7]);
+	else
+		read_client(fd, buf);
+}
+
+void	user_cmd(int fd)
+{
+	int		r;
+	char	*buf;
+	char	*pwd;
+
+	buf = NULL;
+	pwd = malloc(sizeof(char) * UCHAR_MAX);
+	getcwd(pwd, UCHAR_MAX);
+	ft_putstr("$> ");
+	while ((r = get_next_line(0, &buf)) > 0)
+	{
+		ft_putendl_fd(buf, fd);
+		if (ft_strcmp(buf, "quit") == 0)
+			return ;
+		// else if (ft_strncmp(buf, "get ", 4) == 0 && ft_strlen(buf) > 4)
+		// 	cmd_get_client(fd, &buf[3]);
+		// else if (ft_strncmp(buf, "put ", 4) == 0 && ft_strlen(buf) > 4)
+		// 	cmd_put_client(fd, &buf[3]);
+		else
+			local_navigation(fd, buf, pwd);
+		free(buf);
+		ft_putstr("$> ");
+	}
+	free(pwd);
+}
+
+int		create_client(char *addr, int port)
 {
 	int					sock;
 	struct protoent		*proto;
@@ -22,21 +70,21 @@ int	create_client(char *addr, int port)
 	sin.sin_port = htons(port);
 	sin.sin_addr.s_addr = inet_addr(addr);
 	if (connect(sock, (const struct sockaddr *)&sin, sizeof(sin)) == -1)
-		handle_error(4, "connection error");
+		handle_error(4, 0, "connection error");
 	return (sock);
 }
 
-int	main (int ac, char **av)
+int		main (int ac, char **av)
 {
 	int port;
 	int	socket;
 
 	if (ac != 3)
-		handle_error(2, av[0]);
+		handle_error(2, 0, av[0]);
 	port = atoi(av[2]);
 	if ((socket = create_client(av[1], port)) < 0)
-		handle_error(3, NULL);
-	write(socket, "Hello World!\n", 13);
+		handle_error(3, 0, "socket not found");
+	user_cmd(socket);
 	close(socket);
 	return (0);
 }
