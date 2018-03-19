@@ -9,9 +9,11 @@ OBJ_DIR_SERVER =	./obj_server
 OBJ_DIR_CLIENT =	./obj_client
 OBJ_DIR_SHARED =	./obj_shared
 
-SRC_SERVER = 		server.c
+SRC_SERVER = 		server.c \
+					commands.c
 
-SRC_CLIENT = 		client.c
+SRC_CLIENT = 		client.c \
+					commands.c
 
 SRC_SHARED =		handle_error.c
 
