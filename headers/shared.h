@@ -3,6 +3,6 @@
 
 # include "libft.h"
 
-void    handle_error(int error_type, char *message);
+void    handle_error(int error_type, int fd, char *message);
 
 #endif
