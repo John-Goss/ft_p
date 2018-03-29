@@ -12,7 +12,7 @@
 */
 
 void    cmd_ls(int fd, char *arg);
-void    cmd_cd(int fd, char *arg, char *absolute_path);
+int     cmd_cd(char *arg, char *absolute_path);
 void	cmd_pwd(int fd);
 void	cmd_mkdir(int fd, char *arg);
 

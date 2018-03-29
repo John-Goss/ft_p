@@ -4,5 +4,6 @@
 # include "libft.h"
 
 void    handle_error(int error_type, int fd, char *message);
+void    free_args(char **argv);
 
 #endif

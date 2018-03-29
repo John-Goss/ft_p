@@ -22,3 +22,12 @@ void    handle_error(int error_type, int fd, char *message)
     }
     exit (-(error_type));
 }
+
+void    free_args(char **argv)
+{
+    while (argv)
+    {
+        free(*argv);
+        argv++;
+    }
+}
