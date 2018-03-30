@@ -25,9 +25,13 @@ void    handle_error(int error_type, int fd, char *message)
 
 void    free_args(char **argv)
 {
-    while (argv)
+    char **tmp;
+
+    tmp = argv;
+    while (*tmp)
     {
-        free(*argv);
-        argv++;
+        free(*tmp);
+        ++tmp;
     }
+    free(argv);
 }

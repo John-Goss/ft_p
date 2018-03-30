@@ -4,47 +4,21 @@
 #include <arpa/inet.h>
 #include <ft_p.h>
 
-int		get_cmd(char *str, char *pwd, int fd)
+void	get_cmd(char **argv, int fd)
 {
-/*
-	else if (ft_strncmp(str, "cd ", 3) == 0 && ft_strlen(str) > 3)
-		cmd_cd(fd, &str[3], pwd);
-	else if (ft_strncmp(str, "get ", 4) == 0 && ft_strlen(str) > 4)
-		cmd_get_server(fd, &str[4]);
-	else if (ft_strncmp(str, "put ", 4) == 0 && ft_strlen(str) > 4)
-		cmd_put_server(fd, &str[4]);
-	else if (ft_strcmp(str, "quit") == 0 && ft_strlen(str) == 4)
-		return (-1);
-	else if (ft_strcmp(str, "pwd") == 0 && ft_strlen(str) == 3)
-		cmd_pwd(fd);
-	else if (ft_strncmp(str, "mkdir ", 6) == 0 && ft_strlen(str) > 6)
-		cmd_mkdir(fd, &str[6]);
-	else if ((ft_strncmp(str, "lls", 3) == 0 && ft_strlen(str) >= 3) ||
-	(ft_strncmp(str, "lcd ", 4) == 0 && ft_strlen(str) > 4) ||
-	(ft_strcmp(str, "lpwd") == 0 && ft_strlen(str) == 4) ||
-	(ft_strncmp(str, "lmkdir ", 7) == 0 && ft_strlen(str) > 7))
-		ft_printf("\033[32mSUCCESS: local client\033[0m\n");
-	else
-		handle_error(6, fd, "Command not found");
-	return (1);
-*/
-	(void)pwd;
-	char **argv = ft_strsplit(str, ' ');
-	if (!ft_strncmp(str, "ls", 2))
+	if (!ft_strncmp(*argv, "ls", 2))
 		execv("/bin/ls", argv);
-	else if (!ft_strncmp(str, "pwd", 3))
+	else if (!ft_strncmp(*argv, "pwd", 3))
 		execv("/bin/pwd", argv);
-	else if (!ft_strncmp(str, "mkdir", 5))
+	else if (!ft_strncmp(*argv, "mkdir", 5))
 		execv("/bin/mkdir", argv);
-	else if (!ft_strcmp(str, "quit"))
+	else if (!ft_strcmp(*argv, "quit"))
 		exit (-1);
 	else
 	{
 		handle_error(3, fd, "Command not found");
 		exit(EXIT_FAILURE);
 	}
-	free_args(argv);
-	return (1);
 }
 
 void	display_status(int status, int fd)
@@ -52,7 +26,7 @@ void	display_status(int status, int fd)
 	if (WEXITSTATUS(status) == 0)
 		ft_putendl_fd("\033[32mSUCCESS\033[0m", fd);
     else
-		ft_putendl_fd("\033[32mFAILLURE\033[0m", fd);
+		ft_putendl_fd("\033[31mFAILLURE\033[0m", fd);
 	write(fd, "\0", 1);
 }
 
@@ -60,35 +34,40 @@ int		handle_command(char *str, int fd, char *pwd)
 {
 	int 	status;
 	pid_t	pid;
-
+	
+	char **argv = ft_strsplit(str, ' ');
 	ft_printf("$> %s\n", str);
 	if (!ft_strncmp(str, "cd", 2))
 	{
 		if (cmd_cd(&str[3], pwd) == 1)
 			ft_putendl_fd("\033[32mSUCCESS\033[0m", fd);
 		else
-			ft_putendl_fd("\033[32mFAILLURE\033[0m", fd);
+			ft_putendl_fd("\033[31mFAILLURE\033[0m", fd);
 		write(fd, "\0", 1);
-		return (1);
-	}
-	pid = fork();
-	if (pid > 0)
-	{
-		wait4(pid, &status, 0, NULL);
-		display_status(status, fd);
-	}
-	else if (pid == 0)
-	{
-		dup2(fd, STDOUT_FILENO);
-		dup2(fd, STDERR_FILENO);
-		close(fd);
-		return (get_cmd(str, pwd, fd));
 	}
 	else
 	{
-		display_status(0, fd);
-		return (0);
+		pid = fork();
+		if (pid > 0)
+		{
+			wait4(pid, &status, 0, NULL);
+			display_status(status, fd);
+		}
+		else if (pid == 0)
+		{
+			dup2(fd, STDOUT_FILENO);
+			dup2(fd, STDERR_FILENO);
+			close(fd);
+			get_cmd(argv, fd);
+		}
+		else
+		{
+			free_args(argv);
+			ft_putendl_fd("\033[31mFAILLURE: FORK ERROR\033[0m", fd);
+			return (0);
+		}
 	}
+	free_args(argv);
 	return (1);
 }
 

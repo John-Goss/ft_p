@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 #include <ft_p.h>
 
-void	read_client(int fd, char *buf)
+void	read_server(int fd, char *buf)
 {
 	int	size;
 
@@ -17,16 +17,21 @@ void	read_client(int fd, char *buf)
 
 void	local_navigation(int fd, char *buf, char *pwd)
 {
-	if (ft_strcmp(buf, "lpwd") == 0 && ft_strlen(buf) == 4)
-		cmd_lpwd();
-	else if (ft_strncmp(buf, "lls", 3) == 0 && ft_strlen(buf) >= 3)
-		cmd_lls(buf);
-	else if (ft_strncmp(buf, "lcd ", 4) == 0 && ft_strlen(buf) > 4)
-		cmd_lcd(&buf[4], pwd);
-	else if (ft_strncmp(buf, "lmkdir ", 7) == 0 && ft_strlen(buf) > 7)
-		cmd_lmkdir(&buf[7]);
+	char **argv = ft_strsplit(buf, ' ');
+	if (!ft_strncmp(buf, "lls", 3))
+		execv("/bin/ls", argv);
+	else if (!ft_strncmp(buf, "lpwd", 4))
+		execv("/bin/pwd", argv);
+	else if (!ft_strncmp(buf, "lmkdir", 6))
+		execv("/bin/mkdir", argv);
+	else if (!ft_strncmp(buf, "lcd", 3))
+		cmd_lcd(buf, pwd);
 	else
-		read_client(fd, buf);
+	{
+		ft_putendl_fd(buf, fd);
+		read_server(fd, buf);
+	}
+	free_args(argv);
 }
 
 void	user_cmd(int fd)
@@ -41,7 +46,6 @@ void	user_cmd(int fd)
 	ft_putstr("$> ");
 	while ((r = get_next_line(0, &buf)) > 0)
 	{
-		ft_putendl_fd(buf, fd);
 		if (ft_strcmp(buf, "quit") == 0)
 			return ;
 		// else if (ft_strncmp(buf, "get ", 4) == 0 && ft_strlen(buf) > 4)
