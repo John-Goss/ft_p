@@ -4,70 +4,34 @@
 #include <arpa/inet.h>
 #include <ft_p.h>
 
-void	get_cmd(char **argv, int fd)
-{
-	if (!ft_strncmp(*argv, "ls", 2))
-		execv("/bin/ls", argv);
-	else if (!ft_strncmp(*argv, "pwd", 3))
-		execv("/bin/pwd", argv);
-	else if (!ft_strncmp(*argv, "mkdir", 5))
-		execv("/bin/mkdir", argv);
-	else if (!ft_strcmp(*argv, "quit"))
-		exit (-1);
-	else
-	{
-		handle_error(3, fd, "Command not found");
-		exit(EXIT_FAILURE);
-	}
-}
-
-void	display_status(int status, int fd)
-{
-	if (WEXITSTATUS(status) == 0)
-		ft_putendl_fd("\033[32mSUCCESS\033[0m", fd);
-    else
-		ft_putendl_fd("\033[31mFAILLURE\033[0m", fd);
-	write(fd, "\0", 1);
-}
-
 int		handle_command(char *str, int fd, char *pwd)
 {
-	int 	status;
-	pid_t	pid;
-	
-	char **argv = ft_strsplit(str, ' ');
-	ft_printf("$> %s\n", str);
+	if (!ft_strncmp("Local", str, 5))
+	{
+		ft_printf("$> Client [%d]: %s\n", fd, str);
+		return (1);
+	}
+	ft_printf("$> Client [%d]: [%s]: ", fd, str);
 	if (!ft_strncmp(str, "cd", 2))
 	{
 		if (cmd_cd(&str[3], pwd) == 1)
+		{
 			ft_putendl_fd("\033[32mSUCCESS\033[0m", fd);
+			ft_putendl("\033[32mSUCCESS\033[0m");
+		}
 		else
-			ft_putendl_fd("\033[31mFAILLURE\033[0m", fd);
+		{
+			ft_putendl_fd("\033[31mFAILURE\033[0m", fd);
+			ft_putendl("\033[31mFAILURE\033[0m");
+		}
 		write(fd, "\0", 1);
 	}
-	else
+	else if (ft_strncmp(str, "get ", 4) == 0 && ft_strlen(str) > 4)
 	{
-		pid = fork();
-		if (pid > 0)
-		{
-			wait4(pid, &status, 0, NULL);
-			display_status(status, fd);
-		}
-		else if (pid == 0)
-		{
-			dup2(fd, STDOUT_FILENO);
-			dup2(fd, STDERR_FILENO);
-			close(fd);
-			get_cmd(argv, fd);
-		}
-		else
-		{
-			free_args(argv);
-			ft_putendl_fd("\033[31mFAILLURE: FORK ERROR\033[0m", fd);
-			return (0);
-		}
+		cmd_get_server(fd, str);
 	}
-	free_args(argv);
+	else
+		cmd_exec_server(str, fd);
 	return (1);
 }
 
@@ -107,9 +71,9 @@ int		handle_fork(int socket)
 				return (-1);
 			else if (pid == 0)
 			{
-				ft_printf("\nNew client!\n");
+				ft_printf("\nNew client ID:[%d]\n", client_socket);
 				handle_server(client_socket);
-				ft_printf("\nClient disconnect\n");
+				ft_printf("\nClient [%d] disconnected\n", client_socket);
 				break ;
 			}
 		}
