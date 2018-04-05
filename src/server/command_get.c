@@ -12,7 +12,7 @@ static void		send_get_server(int fd, struct stat st, void *ptr, int file)
 	if (recv_alert("SEND", fd) < 1)
 	{
         ft_putstr("can't get size from client side ");
-        return ;
+        return (display_get_status(0, fd));
     }
     send(fd, ptr, st.st_size, 0);
 	munmap(ptr, st.st_size);

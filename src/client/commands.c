@@ -35,7 +35,7 @@ int		cmd_lcd(char *arg, char *absolute_path)
 	}
 	if (cd_check_permissions_client(absolute_path, cur_path) == 0)
 		return (0);
-	ft_putendl("\033[32mSUCCESS: lcd\033[0m");
+	ft_putendl("\033[32mSUCCESS\033[0m");
 	free(dir);
 	return (1);
 }
