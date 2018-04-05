@@ -17,6 +17,7 @@
 int     cmd_cd(char *arg, char *absolute_path);
 void    cmd_exec_server(char *str, int fd);
 void	display_status(int status, int fd);
+void	display_get_status(int status, int fd);
 void    cmd_get_server(int fd, char *buf);
 
 /*

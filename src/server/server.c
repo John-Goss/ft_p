@@ -6,13 +6,15 @@
 
 int		handle_command(char *str, int fd, char *pwd)
 {
+	if (!ft_strcmp("", str))
+		return (1);
 	if (!ft_strncmp("Local", str, 5))
 	{
 		ft_printf("$> Client [%d]: %s\n", fd, str);
 		return (1);
 	}
 	ft_printf("$> Client [%d]: [%s]: ", fd, str);
-	if (!ft_strncmp(str, "cd", 2))
+	if (!ft_strncmp(str, "cd ", 3))
 	{
 		if (cmd_cd(&str[3], pwd) == 1)
 		{
@@ -27,9 +29,7 @@ int		handle_command(char *str, int fd, char *pwd)
 		write(fd, "\0", 1);
 	}
 	else if (ft_strncmp(str, "get ", 4) == 0 && ft_strlen(str) > 4)
-	{
-		cmd_get_server(fd, str);
-	}
+		cmd_get_server(fd, str + 3);
 	else
 		cmd_exec_server(str, fd);
 	return (1);

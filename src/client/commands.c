@@ -9,7 +9,7 @@ static int	cd_check_permissions_client(char *absolute_path,
 	if (ft_strncmp(absolute_path, path, ft_strlen(absolute_path)) != 0)
 	{
 		chdir(cur_path);
-		ft_putendl("\033[31mFIALURE: lcd, no permissions to access here\033[0m");
+		ft_putendl("\033[31mFAILURE: lcd, no permissions to access here\033[0m");
 		return (0);
 	}
 	return (1);

@@ -33,11 +33,11 @@ int			cmd_cd(char *arg, char *absolute_path)
 
 void	get_cmd(char **argv, int fd)
 {
-	if (!ft_strncmp(*argv, "ls", 2))
+	if (!ft_strcmp(*argv, "ls") || !ft_strncmp(*argv, "ls ", 3))
 		execv("/bin/ls", argv);
-	else if (!ft_strncmp(*argv, "pwd", 3))
+	else if (!ft_strcmp(*argv, "pwd") || !ft_strncmp(*argv, "pwd ", 4))
 		execv("/bin/pwd", argv);
-	else if (!ft_strncmp(*argv, "mkdir", 5))
+	else if (!ft_strncmp(*argv, "mkdir ", 6))
 		execv("/bin/mkdir", argv);
 	else if (!ft_strcmp(*argv, "quit"))
 		exit (-1);

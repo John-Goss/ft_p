@@ -38,25 +38,26 @@ int 			cmd_get_client(int fd, char *buf)
 	file = -1;
 	if (recv_alert("RDONLY_OK", fd) < 1)
 	{
-        ft_putendl("ERROR: open() server side failed");
+        ft_putendl("\033[31mFAILURE\033[0m: open() server side failed");
     	return (0);
     }
-    if ((file = open_file_wronly(buf + 4, fd)) == -1)
+    if ((file = open_file_wronly(buf, fd)) == -1)
 	{
-        ft_putendl("ERROR: Can't create the file, already exists");
+        ft_putendl("\033[31mFAILURE\033[0m: Can't create the file, already exists");
 		return (0);
 	}
-	if (recv_alert("WRONLY_OK", fd) < 1)
+	if (recv_alert("TEST_OK", fd) < 1)
 	{
 		close(file);
 		return (0);
 	}
 	if ((size = size_file(fd)) == -1)
 	{
-        ft_putendl("ERROR: Can't send size from client side");
+        ft_putendl("\033[31mFAILURE\033[0m: Can't send size from client side");
        	return (0);
     }
     recv_get_client(fd, file, size);
+	ft_putendl_fd("SUCCESS", fd);
 	get_next(fd);
 	close(file);
     return (1);

@@ -23,13 +23,16 @@ int		local_navigation(int fd, char *buf, char *pwd)
 
 	ret = 0;
 	argv = ft_strsplit(buf, ' ');
-	if (!ft_strncmp(buf, "lcd", 3))
+	if (!ft_strcmp(buf, ""))
+		ret = 2;
+	else if (!ft_strncmp(buf, "lcd ", 4))
 	{
 		display_server_local_cmd(buf, fd);
 		ret = cmd_lcd(buf + 4, pwd);
 	}
-	else if (!ft_strncmp(buf, "lls", 3) || !ft_strncmp(buf, "lpwd", 4)
-	|| !ft_strncmp(buf, "lmkdir", 6))
+	else if (!ft_strcmp(buf, "lls") || !ft_strncmp(buf, "lls ", 4)
+	|| !ft_strcmp(buf, "lpwd") || !ft_strncmp(buf, "lpwd ", 5)
+	|| !ft_strncmp(buf, "lmkdir ", 7))
 	{
 		display_server_local_cmd(buf, fd);
 		ret = cmd_exec_client(argv);
@@ -49,7 +52,6 @@ void	user_cmd(int fd)
 	int		r;
 	char	*buf;
 	char	*pwd;
-	int		status;
 
 	buf = NULL;
 	pwd = malloc(sizeof(char) * UCHAR_MAX);
@@ -62,13 +64,12 @@ void	user_cmd(int fd)
 		else if (ft_strncmp(buf, "get ", 4) == 0 && ft_strlen(buf) > 4)
 		{
 			ft_putendl_fd(buf, fd);
-			status = cmd_get_client(fd, &buf[3]);
+			cmd_get_client(fd, &buf[3]);
 		}
 		// else if (ft_strncmp(buf, "put ", 4) == 0 && ft_strlen(buf) > 4)
 		// 	cmd_put_client(fd, &buf[3]);
 		else
-			status = local_navigation(fd, buf, pwd);
-		display_results(status, fd);
+			display_results(local_navigation(fd, buf, pwd), fd);
 		free(buf);
 		ft_putstr("$> ");
 	}
