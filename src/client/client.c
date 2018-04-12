@@ -66,8 +66,11 @@ void	user_cmd(int fd)
 			ft_putendl_fd(buf, fd);
 			cmd_get_client(fd, &buf[3]);
 		}
-		// else if (ft_strncmp(buf, "put ", 4) == 0 && ft_strlen(buf) > 4)
-		// 	cmd_put_client(fd, &buf[3]);
+		 else if (ft_strncmp(buf, "put ", 4) == 0 && ft_strlen(buf) > 4)
+		{
+			ft_putendl_fd(buf, fd);
+		 	cmd_put_client(fd, &buf[3]);
+		}
 		else
 			display_results(local_navigation(fd, buf, pwd), fd);
 		free(buf);

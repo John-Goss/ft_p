@@ -59,3 +59,51 @@ void			cmd_get_server(int fd, char *buf)
 	send_get_server(fd, st, ptr, file);
 	close(file);
 }
+
+static int			recv_put_server(int fd, int file, int size_max)
+{
+	char			*buff;
+	int				size;
+	int				n;
+
+	n = 0;
+	if (!(buff = malloc(sizeof(char) * size_max)))
+		return (-1);
+	while (n < size_max)
+	{
+		size = recv(fd, buff + n, 4096, 0);
+		if (size % 4096 != 0)
+			break ;
+		n += size;
+	}
+	if (write(file, buff, size_max) == -1)
+	{
+		ft_putendl_fd("ERROR", fd);
+		return (0);
+	}
+	ft_putendl_fd("SUCCESS", fd);
+	return (1);
+}
+
+void				cmd_put_server(int fd, char *buf)
+{
+	int		file;
+	int		size;
+
+	file = -1;
+	if (recv_alert("RDONLY_OK", fd) < 1)
+		return (ft_putendl("\033[31mFAILURE\033[0m: open() client side failed"));
+	if ((file = open_file_wronly(buf, fd)) == -1)
+	{
+		return (ft_putendl("\033[31mFAILURE\033[0m: Can't create the file already exists"));
+	}
+	if (recv_alert("TEST_OK", fd) < 1)
+	{
+		close(file);
+		return (ft_putendl("\033[31mFAILURE\033[0m"));
+	}
+	if ((size = size_file(fd)) == -1)
+		return (ft_putendl("\033[31mFAILURE\033[0m: Can't send size from server side"));
+	(recv_put_server(fd, file, size) == 1) ? display_get_status(1, fd) : display_get_status(0, fd);
+	close(file);	
+}

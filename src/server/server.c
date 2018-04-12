@@ -30,6 +30,8 @@ int		handle_command(char *str, int fd, char *pwd)
 	}
 	else if (ft_strncmp(str, "get ", 4) == 0 && ft_strlen(str) > 4)
 		cmd_get_server(fd, str + 3);
+	else if (ft_strncmp(str, "put ", 4) == 0 && ft_strlen(str) > 4)
+		cmd_put_server(fd, str + 3);
 	else
 		cmd_exec_server(str, fd);
 	return (1);

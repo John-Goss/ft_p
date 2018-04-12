@@ -19,6 +19,7 @@ void    cmd_exec_server(char *str, int fd);
 void	display_status(int status, int fd);
 void	display_get_status(int status, int fd);
 void    cmd_get_server(int fd, char *buf);
+void    cmd_put_server(int fd, char *buf);
 
 /*
 ** Client
@@ -30,5 +31,6 @@ void    display_results(int status, int fd);
 void    display_server_local_cmd(char *cmd, int fd);
 int		display_local_status(int status);
 int     cmd_get_client(int fd, char *buf);
+int     cmd_put_client(int fd, char *buf);
 
 #endif

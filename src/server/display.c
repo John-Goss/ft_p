@@ -21,11 +21,10 @@ void	display_get_status(int status, int fd)
 	{
 		ft_putendl_fd("\033[32mSUCCESS\033[0m", fd);
 		ft_putendl("\033[32mSUCCESS\033[0m");
+		write(fd, "\0", 1);
 	}
 	else
 	{
-		ft_putendl_fd("\033[31mFAILURE\033[0m", fd);
 		ft_putendl("\033[31mFAILURE\033[0m");
 	}
-	write(fd, "\0", 1);
 }
