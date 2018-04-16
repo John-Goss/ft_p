@@ -1,11 +1,10 @@
 #include <shared.h>
 #include <ft_p.h>
 
-static void		send_get_server(int fd, struct stat st, void *ptr, int file)
+static void		send_get_server(int fd, struct stat st, void *ptr)
 {
 	char		*size;
 
-    (void)file;
 	size = ft_itoa(st.st_size);
 	ft_putendl_fd(size, fd);
 	free(size);
@@ -52,11 +51,12 @@ void			cmd_get_server(int fd, char *buf)
 			== MAP_FAILED)
 	{
 		ft_putendl_fd("TEST_ERROR", fd);
+		ft_putstr("Can't mapping the file ");
 		close(file);
 		return (display_get_status(0, fd));
 	}
 	ft_putendl_fd("TEST_OK", fd);
-	send_get_server(fd, st, ptr, file);
+	send_get_server(fd, st, ptr);
 	close(file);
 }
 

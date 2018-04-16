@@ -88,7 +88,6 @@ int				cmd_put_client(int fd, char *buf)
 
 	if ((file = open_file_rdonly(buf, fd)) == -1)
 	{
-		ft_putendl_fd("TEST_ERROR", fd);
 		ft_putendl("\033[31mFAILURE\033[0m: open() client side failed");
 		return (0);
 	}

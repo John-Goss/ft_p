@@ -48,7 +48,10 @@ int		open_file_wronly(char *cmd, int fd)
 		++filename;
 	if ((file = open(filename, O_WRONLY | O_CREAT | O_EXCL,
 		S_IRWXU | S_IRGRP | S_IROTH)) == -1)
+	{
 		ft_putendl_fd("ERROR_WRONLY", fd);
+		close(file);
+	}
 	else
 		ft_putendl_fd("WRONLY_OK", fd);
 	return (file);
@@ -58,12 +61,19 @@ int		open_file_rdonly(char *cmd, int client)
 {
 	char		*filename;
 	int			file;
+	struct stat	st;
 
 	filename = cmd;
 	while (*filename == ' ')
 		++filename;
 	if ((file = open(filename, O_RDONLY)) == -1)
 		ft_putendl_fd("ERROR_RONDLY", client);
+	else if ((fstat(file, &st)) == -1 || S_ISREG(st.st_mode) != 1)
+	{
+		close(file);
+		ft_putendl_fd("ERROR_FILE", client);
+		return (-1);
+	}
 	else
 		ft_putendl_fd("RDONLY_OK", client);
 	return (file);
