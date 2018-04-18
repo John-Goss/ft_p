@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/18 14:26:49 by jle-quer          #+#    #+#             */
+/*   Updated: 2018/04/18 14:26:50 by jle-quer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -14,18 +26,12 @@ int		handle_command(char *str, int fd, char *pwd)
 		return (1);
 	}
 	ft_printf("$> Client [%d]: [%s]: ", fd, str);
-	if (!ft_strncmp(str, "cd ", 3))
+	if (!ft_strncmp(str, "cd", 2) && ft_isspace(str[2]))
 	{
-		if (cmd_cd(&str[3], pwd) == 1)
-		{
-			ft_putendl_fd("\033[32mSUCCESS\033[0m", fd);
-			ft_putendl("\033[32mSUCCESS\033[0m");
-		}
+		if (cmd_cd(&str[3], pwd, fd) == 1)
+			display_success_failure(1, fd);
 		else
-		{
-			ft_putendl_fd("\033[31mFAILURE\033[0m", fd);
-			ft_putendl("\033[31mFAILURE\033[0m");
-		}
+			display_success_failure(0, fd);
 		write(fd, "\0", 1);
 	}
 	else if (ft_strncmp(str, "get ", 4) == 0 && ft_strlen(str) > 4)
@@ -49,10 +55,10 @@ void	handle_server(int socket)
 		if (get_next_line(socket, &buf) > 0)
 		{
 			if (handle_command(buf, socket, pwd) == -1)
-				break;
+				break ;
 		}
 		else
-			break;
+			break ;
 		free(buf);
 	}
 	free(pwd);
@@ -107,7 +113,7 @@ int		create_server(int port)
 	return (sock);
 }
 
-int		main (int ac, char **av)
+int		main(int ac, char **av)
 {
 	int	port;
 	int	socket;

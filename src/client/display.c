@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   display.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/18 14:22:22 by jle-quer          #+#    #+#             */
+/*   Updated: 2018/04/18 14:22:23 by jle-quer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <ft_p.h>
 
 void	display_server_local_cmd(char *cmd, int fd)
@@ -17,7 +29,7 @@ void	display_results(int status, int fd)
 	{
 		ft_putendl_fd("\033[32mSUCCESS\033[0m", fd);
 	}
-	write (fd, "\0", 1);
+	write(fd, "\0", 1);
 }
 
 int		display_local_status(int status)

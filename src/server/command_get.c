@@ -1,5 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   command_get.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/18 14:26:31 by jle-quer          #+#    #+#             */
+/*   Updated: 2018/04/18 14:26:33 by jle-quer         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <shared.h>
 #include <ft_p.h>
+
+static void		puts_get_error(char *message, int fd)
+{
+	ft_putstr(message);
+	return (display_get_status(0, fd));
+}
 
 static void		send_get_server(int fd, struct stat st, void *ptr)
 {
@@ -9,20 +27,13 @@ static void		send_get_server(int fd, struct stat st, void *ptr)
 	ft_putendl_fd(size, fd);
 	free(size);
 	if (recv_alert("SEND", fd) < 1)
-	{
-        ft_putstr("can't get size from client side ");
-        return (display_get_status(0, fd));
-    }
-    send(fd, ptr, st.st_size, 0);
+		return (puts_get_error("Can't get size from client side ", fd));
+	send(fd, ptr, st.st_size, 0);
 	munmap(ptr, st.st_size);
 	if (recv_alert("SUCCESS", fd) == 1)
-	{
 		display_get_status(1, fd);
-	}
 	else
-	{
 		display_get_status(0, fd);
-	}
 }
 
 void			cmd_get_server(int fd, char *buf)
@@ -32,35 +43,27 @@ void			cmd_get_server(int fd, char *buf)
 	void		*ptr;
 
 	if ((file = open_file_rdonly(buf, fd)) == -1)
-	{
-        ft_putstr("open() server side failed ");
-        return (display_get_status(0, fd));
-    }
-    if (recv_alert("WRONLY_OK", fd) < 1)
-    {
-        ft_putstr("open() client side failed ");
-		return (display_get_status(0, fd));
-    }
+		return (puts_get_error("Open() server side failed ", fd));
+	if (recv_alert("WRONLY_OK", fd) < 1)
+		return (puts_get_error("Open() client side failed ", fd));
 	if ((fstat(file, &st)) == -1)
 	{
 		ft_putendl_fd("TEST_ERROR", fd);
-		ft_putstr("fstat() server side failed ");
-        return (display_get_status(0, fd));
+		return (puts_get_error("fstat() server side failed ", fd));
 	}
 	if ((ptr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, file, 0))
 			== MAP_FAILED)
 	{
 		ft_putendl_fd("TEST_ERROR", fd);
-		ft_putstr("Can't mapping the file ");
 		close(file);
-		return (display_get_status(0, fd));
+		return (puts_get_error("Can't mapping the file ", fd));
 	}
 	ft_putendl_fd("TEST_OK", fd);
 	send_get_server(fd, st, ptr);
 	close(file);
 }
 
-static int			recv_put_server(int fd, int file, int size_max)
+static int		recv_put_server(int fd, int file, int size_max)
 {
 	char			*buff;
 	int				size;
@@ -85,25 +88,24 @@ static int			recv_put_server(int fd, int file, int size_max)
 	return (1);
 }
 
-void				cmd_put_server(int fd, char *buf)
+void			cmd_put_server(int fd, char *buf)
 {
 	int		file;
 	int		size;
 
 	file = -1;
 	if (recv_alert("RDONLY_OK", fd) < 1)
-		return (ft_putendl("\033[31mFAILURE\033[0m: open() client side failed"));
+		return (return_error_void("Open() client side failed"));
 	if ((file = open_file_wronly(buf, fd)) == -1)
-	{
-		return (ft_putendl("\033[31mFAILURE\033[0m: Can't create the file already exists"));
-	}
+		return (return_error_void("Can't create the file already exists"));
 	if (recv_alert("TEST_OK", fd) < 1)
 	{
 		close(file);
 		return (ft_putendl("\033[31mFAILURE\033[0m"));
 	}
 	if ((size = size_file(fd)) == -1)
-		return (ft_putendl("\033[31mFAILURE\033[0m: Can't send size from server side"));
-	(recv_put_server(fd, file, size) == 1) ? display_get_status(1, fd) : display_get_status(0, fd);
-	close(file);	
+		return (return_error_void("Can't send size from server side"));
+	(recv_put_server(fd, file, size) == 1) ? display_get_status(1, fd)
+	: display_get_status(0, fd);
+	close(file);
 }
