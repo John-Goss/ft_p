@@ -27,7 +27,7 @@ static void		send_get_server(int fd, struct stat st, void *ptr)
 	ft_putendl_fd(size, fd);
 	free(size);
 	if (recv_alert("SEND", fd) < 1)
-		return (puts_get_error("Can't get size from client side ", fd));
+		return (puts_get_error("Can't get size from client side: ", fd));
 	send(fd, ptr, st.st_size, 0);
 	munmap(ptr, st.st_size);
 	if (recv_alert("SUCCESS", fd) == 1)
@@ -43,20 +43,20 @@ void			cmd_get_server(int fd, char *buf)
 	void		*ptr;
 
 	if ((file = open_file_rdonly(buf, fd)) == -1)
-		return (puts_get_error("Open() server side failed ", fd));
+		return (puts_get_error("Open() server side failed: ", fd));
 	if (recv_alert("WRONLY_OK", fd) < 1)
-		return (puts_get_error("Open() client side failed ", fd));
+		return (puts_get_error("Open() client side failed: ", fd));
 	if ((fstat(file, &st)) == -1)
 	{
 		ft_putendl_fd("TEST_ERROR", fd);
-		return (puts_get_error("fstat() server side failed ", fd));
+		return (puts_get_error("fstat() server side failed: ", fd));
 	}
 	if ((ptr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, file, 0))
 			== MAP_FAILED)
 	{
 		ft_putendl_fd("TEST_ERROR", fd);
 		close(file);
-		return (puts_get_error("Can't mapping the file ", fd));
+		return (puts_get_error("Can't mapping the file: ", fd));
 	}
 	ft_putendl_fd("TEST_OK", fd);
 	send_get_server(fd, st, ptr);
@@ -95,16 +95,16 @@ void			cmd_put_server(int fd, char *buf)
 
 	file = -1;
 	if (recv_alert("RDONLY_OK", fd) < 1)
-		return (return_error_void("Open() client side failed"));
+		return (return_error_void("Open() client side failed: "));
 	if ((file = open_file_wronly(buf, fd)) == -1)
-		return (return_error_void("Can't create the file already exists"));
+		return (return_error_void("Can't create the file already exists: "));
 	if (recv_alert("TEST_OK", fd) < 1)
 	{
 		close(file);
-		return (ft_putendl("\033[31mFAILURE\033[0m"));
+		return (ft_putendl("\033[31mERROR\033[0m"));
 	}
 	if ((size = size_file(fd)) == -1)
-		return (return_error_void("Can't send size from server side"));
+		return (return_error_void("Can't send size from server side: "));
 	(recv_put_server(fd, file, size) == 1) ? display_get_status(1, fd)
 	: display_get_status(0, fd);
 	close(file);

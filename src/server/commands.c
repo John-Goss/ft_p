@@ -49,11 +49,11 @@ int			cmd_cd(char *arg, char *absolute_path, int fd)
 
 void		get_cmd(char **argv, int fd)
 {
-	if (!ft_strcmp(*argv, "ls") || !ft_strncmp(*argv, "ls ", 3))
+	if (!ft_strcmp(*argv, "ls"))
 		execv("/bin/ls", argv);
-	else if (!ft_strcmp(*argv, "pwd") || !ft_strncmp(*argv, "pwd ", 4))
+	else if (!ft_strcmp(*argv, "pwd"))
 		execv("/bin/pwd", argv);
-	else if (!ft_strncmp(*argv, "mkdir ", 6))
+	else if (!ft_strcmp(*argv, "mkdir"))
 		execv("/bin/mkdir", argv);
 	else if (!ft_strcmp(*argv, "quit"))
 		exit(-1);
@@ -85,6 +85,6 @@ void		cmd_exec_server(char *str, int fd)
 		get_cmd(argv, fd);
 	}
 	else
-		ft_putendl_fd("\033[31mFAILURE: FORK ERROR\033[0m", fd);
+		ft_putendl_fd("\033[31mERROR: fork failed\033[0m", fd);
 	free_args(argv);
 }

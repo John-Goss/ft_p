@@ -50,18 +50,18 @@ int				cmd_get_client(int fd, char *buf)
 
 	file = -1;
 	if (recv_alert("RDONLY_OK", fd) < 1)
-		return (return_error_code("Open() server side failed"));
+		return (return_error_code("Open() server side failed: "));
 	if ((file = open_file_wronly(buf, fd)) == -1)
-		return (return_error_code("Can't create the file, already exists"));
+		return (return_error_code("Can't create the file, already exists: "));
 	if (recv_alert("TEST_OK", fd) < 1)
 	{
 		close(file);
-		return (return_error_code("Can't mapping the file"));
+		return (return_error_code("Can't mapping the file: "));
 	}
 	if ((size = size_file(fd)) == -1)
-		return (return_error_code("Can't send size from client side"));
+		return (return_error_code("Can't send size from client side: "));
 	(recv_get_client(fd, file, size)) == 1 ? ft_putendl_fd("SUCCESS", fd)
-		: ft_putendl_fd("FAILURE", fd);
+		: ft_putendl_fd("ERROR", fd);
 	get_next(fd);
 	close(file);
 	return (1);
@@ -90,20 +90,20 @@ int				cmd_put_client(int fd, char *buf)
 	void		*ptr;
 
 	if ((file = open_file_rdonly(buf, fd)) == -1)
-		return (return_error_code("Open() client side failed"));
+		return (return_error_code("Open() client side failed: "));
 	if (recv_alert("WRONLY_OK", fd) < 1)
-		return (return_error_code("Can't create the file, already exists"));
+		return (return_error_code("Can't create the file, already exists: "));
 	if ((fstat(file, &st)) == -1)
 	{
 		ft_putendl_fd("TEST_ERROR", fd);
-		return (return_error_code("fstat() client side failed"));
+		return (return_error_code("fstat() client side failed: "));
 	}
 	if ((ptr = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, file, 0))
 			== MAP_FAILED)
 	{
 		ft_putendl_fd("TEST_ERROR", fd);
 		close(file);
-		return (return_error_code("Can't mapping the file"));
+		return (return_error_code("Can't mapping the file: "));
 	}
 	ft_putendl_fd("TEST_OK", fd);
 	send_put_client(st, fd, ptr);

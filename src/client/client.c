@@ -112,6 +112,8 @@ int		main(int ac, char **av)
 	if (ac != 3)
 		handle_error(2, 0, av[0]);
 	port = atoi(av[2]);
+	if (!ft_strcmp(av[1], "localhost"))
+		av[1] = "127.0.0.1\0";
 	if ((socket = create_client(av[1], port)) < 0)
 		handle_error(3, 0, "socket not found");
 	user_cmd(socket);

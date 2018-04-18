@@ -6,11 +6,12 @@
 /*   By: jle-quer <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 14:53:29 by jle-quer          #+#    #+#             */
-/*   Updated: 2018/04/18 14:56:42 by jle-quer         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:51:04 by jle-quer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <shared.h>
+#include <ft_p.h>
 
 void	handle_error(int error_type, int fd, char *message)
 {
@@ -50,14 +51,14 @@ void	free_args(char **argv)
 
 int		return_error_code(char *message)
 {
-	ft_putendl("\033[31mFAILURE\033[0m: ");
-	ft_putendl(message);
+	ft_putstr(message);
+	ft_putendl("\033[31mERROR\033[0m");
 	return (0);
 }
 
 void	return_error_void(char *message)
 {
-	ft_putendl("\033[31mFAILURE\033[0m: ");
-	ft_putendl(message);
+	ft_putstr(message);
+	ft_putendl("\033[31mERROR\033[0m");
 	return ;
 }

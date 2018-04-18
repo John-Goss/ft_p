@@ -21,8 +21,8 @@ void	display_status(int status, int fd)
 	}
 	else
 	{
-		ft_putendl_fd("\033[31mFAILURE\033[0m", fd);
-		ft_putendl("\033[31mFAILURE\033[0m");
+		ft_putendl_fd("\033[31mERROR\033[0m", fd);
+		ft_putendl("\033[31mERROR\033[0m");
 	}
 	write(fd, "\0", 1);
 }
@@ -37,7 +37,7 @@ void	display_get_status(int status, int fd)
 	}
 	else
 	{
-		ft_putendl("\033[31mFAILURE\033[0m");
+		ft_putendl("\033[31mERROR\033[0m");
 	}
 }
 
@@ -50,7 +50,7 @@ void	display_success_failure(int val, int fd)
 	}
 	else
 	{
-		ft_putendl_fd("\033[31mFAILURE\033[0m", fd);
-		ft_putendl("\033[31mFAILURE\033[0m");
+		ft_putendl_fd("\033[31mERROR\033[0m", fd);
+		ft_putendl("\033[31mERROR\033[0m");
 	}
 }

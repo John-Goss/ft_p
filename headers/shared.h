@@ -14,7 +14,6 @@
 # define SHARED_H
 
 # include <libft.h>
-# include <ft_p.h>
 
 void	handle_error(int error_type, int fd, char *message);
 int		return_error_code(char *message);

@@ -23,7 +23,7 @@ void	display_results(int status, int fd)
 {
 	if (status == 0)
 	{
-		ft_putendl_fd("\033[31mFAILURE\033[0m", fd);
+		ft_putendl_fd("\033[31mERROR\033[0m", fd);
 	}
 	else if (status == 1)
 	{
@@ -41,7 +41,7 @@ int		display_local_status(int status)
 	}
 	else
 	{
-		ft_putendl("\033[31mFAILURE\033[0m");
+		ft_putendl("\033[31mERROR\033[0m");
 		return (0);
 	}
 }
