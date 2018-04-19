@@ -40,13 +40,21 @@ I_LIBFT = 			-I libft/INCLUDES/
 
 LIBFT = 			$(I_LIBFT) -Llibft -lft
 
-all: $(NAME_SERVER)
+all: serveur client
 
-$(NAME_SERVER): $(OBJ_SERVER) $(OBJ_CLIENT) $(OBJ_SHARED)
+server: $(NAME_SERVER)
+
+clint: $(NAME_CLIENT)
+
+$(NAME_SERVER): $(OBJ_SERVER) $(OBJ_SHARED)
 	@make -C libft
 	@$(CC) $(FLAGS) -o $(NAME_SERVER) $(OBJ_SERVER) $(OBJ_SHARED) $(HEADERS) $(LIBFT)
+	@echo "\033[1;34mSERVER\t\t\033[1;33mCompilation\t\033[0;32m-OK-\033[0m"
+
+$(NAME_CLIENT): $(OBJ_CLIENT) $(OBJ_SHARED)
+	@make -C libft
 	@$(CC) $(FLAGS) -o $(NAME_CLIENT) $(OBJ_CLIENT) $(OBJ_SHARED) $(HEADERS) $(LIBFT)
-	@echo "\033[1;34mSERVER/CLIENT\t\t\033[1;33mCompilation\t\033[0;32m-OK-\033[0m"
+	@echo "\033[1;34mCLIENT\t\t\033[1;33mCompilation\t\033[0;32m-OK-\033[0m"
 
 $(OBJ_DIR_SERVER)/%.o: $(SRC_DIR_SERVER)/%.c
 	@mkdir $(OBJ_DIR_SERVER) 2> /dev/null || true
@@ -85,4 +93,4 @@ norme:
 	@echo "\033[1;34mSERVER/CLIENT\t\033[1;33mNorminette\t\033[0;32m-OK-\033[0m"
 	@norminette $(SRC_PATH_SERVER) $(SRC_PATH_CLIENT) $(SRC_PATH_SHARED)
 
-.PHONY: re fclean clean all norme server client
+.PHONY: re fclean clean all norme server clint
