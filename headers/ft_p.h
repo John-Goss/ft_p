@@ -18,7 +18,6 @@
 # include <limits.h>
 # include <dirent.h>
 # include <sys/stat.h>
-# include <sys/socket.h>
 # include <sys/mman.h>
 # include <fcntl.h>
 

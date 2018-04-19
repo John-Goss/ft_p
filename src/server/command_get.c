@@ -12,6 +12,7 @@
 
 #include <shared.h>
 #include <ft_p.h>
+#include <sys/socket.h>
 
 static void		puts_get_error(char *message, int fd)
 {

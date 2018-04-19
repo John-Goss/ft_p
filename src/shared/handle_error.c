@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <shared.h>
 #include <ft_p.h>
 
 void	handle_error(int error_type, int fd, char *message)

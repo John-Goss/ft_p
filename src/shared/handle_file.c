@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <shared.h>
 #include <ft_p.h>
 
 int		recv_alert(char *str, int fd)

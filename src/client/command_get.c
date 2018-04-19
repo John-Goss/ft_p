@@ -10,8 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ft_p.h>
 #include <shared.h>
+#include <ft_p.h>
+#include <sys/socket.h>
 
 static int		recv_get_client(int fd, int file, int size_max)
 {
