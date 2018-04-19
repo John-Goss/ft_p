@@ -40,21 +40,13 @@ I_LIBFT = 			-I libft/INCLUDES/
 
 LIBFT = 			$(I_LIBFT) -Llibft -lft
 
-all: $(NAME_SERVER) $(NAME_CLIENT)
+all: $(NAME_SERVER)
 
-server: $(NAME_SERVER)
-
-client: $(NAME_CLIENT)
-
-$(NAME_SERVER): $(OBJ_SERVER) $(OBJ_SHARED)
+$(NAME_SERVER): $(OBJ_SERVER) $(OBJ_CLIENT) $(OBJ_SHARED)
 	@make -C libft
-	@$(CC) $(FLAGS) -o $@ $(OBJ_SERVER) $(OBJ_SHARED) $(HEADERS) $(LIBFT)
-	@echo "\033[1;34mSERVER\t\t\033[1;33mCompilation\t\033[0;32m-OK-\033[0m"
-
-$(NAME_CLIENT): $(OBJ_CLIENT) $(OBJ_SHARED)
-	@make -C libft
-	@$(CC) $(FLAGS) -o $@ $(OBJ_CLIENT) $(OBJ_SHARED) $(HEADERS) $(LIBFT)
-	@echo "\033[1;34mCLIENT\t\t\033[1;33mCompilation\t\033[0;32m-OK-\033[0m"
+	@$(CC) $(FLAGS) -o $(NAME_SERVER) $(OBJ_SERVER) $(OBJ_SHARED) $(HEADERS) $(LIBFT)
+	@$(CC) $(FLAGS) -o $(NAME_CLIENT) $(OBJ_CLIENT) $(OBJ_SHARED) $(HEADERS) $(LIBFT)
+	@echo "\033[1;34mSERVER/CLIENT\t\t\033[1;33mCompilation\t\033[0;32m-OK-\033[0m"
 
 $(OBJ_DIR_SERVER)/%.o: $(SRC_DIR_SERVER)/%.c
 	@mkdir $(OBJ_DIR_SERVER) 2> /dev/null || true
